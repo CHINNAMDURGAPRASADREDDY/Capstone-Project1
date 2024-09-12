@@ -1,16 +1,30 @@
-name:  Cypress project Tests
+name: CI Workflow
 
-
-on:push
-   
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  cypress-run:
-    runs-on: ubuntu-latest   
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code  
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Changed Node.js version to 16
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+
