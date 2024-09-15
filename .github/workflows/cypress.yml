@@ -1,6 +1,6 @@
 name: Cypress Tests
 
-on:
+on: 
   push:
     branches:
       - main
@@ -13,53 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout the repository
+      uses: actions/checkout@v2
 
-      # Setup Node.js (you can change the node-version if needed)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16' # Specify your Node.js version here
 
-      # Install npm dependencies
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies with legacy peer deps
+      run: npm ci --legacy-peer-deps
 
-      # Run Cypress tests
-      - name: Run Cypress tests
-        run: npm run cypress:run
+    - name: Install Cypress and Mochawesome dependencies
+      run: npm install cypress mochawesome mochawesome-merge mochawesome-report-generator --legacy-peer-deps
 
-      # Merge Mochawesome reports (after tests are complete)
-      - name: Merge Mochawesome reports
-        run: npm run report:merge
+    - name: Ensure correct permissions for Cypress
+      run: chmod +x ./node_modules/.bin/cypress
 
-      # Generate final Mochawesome HTML report
-      - name: Generate Mochawesome HTML report
-        run: npm run report:generate
+    - name: Run Cypress tests with Mochawesome reporter
+      run: npx cypress run --reporter mochawesome
 
-      # Upload report to GitHub Actions as artifact
-      - name: Upload test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: mochawesome-report
-          path: cypress/reports/test-report.html
-
-      # Upload Cypress videos as artifacts (if you enable video recording)
-      - name: Upload Cypress videos
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress-videos
-          path: cypress/videos
-
-      # Upload Cypress screenshots as artifacts (if tests fail and screenshots are captured)
-      - name: Upload Cypress screenshots
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-
-
+    - name: Generate Mochawesome report
+      run: npx mochawesome-merge cypress/reports/*.json | npx mochawesome-report-generator --reportDir cypress/reports
