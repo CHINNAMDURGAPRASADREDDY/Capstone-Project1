@@ -1,3 +1,4 @@
+
 describe('Checkout Process', () => {
     it('should complete checkout with valid payment details', () => {
       cy.visit('https://www.demoblaze.com');

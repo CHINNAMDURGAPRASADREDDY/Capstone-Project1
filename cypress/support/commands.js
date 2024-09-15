@@ -11,6 +11,7 @@
 //
 // -- This is a parent command --
     // Custom command to log in
+    
 Cypress.Commands.add('login', (username, password) => {
     cy.visit('https://www.demoblaze.com');
     cy.get('#login2').click();

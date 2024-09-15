@@ -1,3 +1,4 @@
+
 describe('User Registration', () => {
   it('should register a new user with valid inputs', () => {
     cy.visit('https://www.demoblaze.com');

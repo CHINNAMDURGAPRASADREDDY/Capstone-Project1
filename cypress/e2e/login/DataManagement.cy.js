@@ -1,3 +1,4 @@
+
 describe('Using Fixtures', () => {
     beforeEach(function () {
       cy.fixture('userData').then((user) => {

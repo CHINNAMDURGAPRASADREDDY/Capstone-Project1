@@ -1,3 +1,4 @@
+
 describe('Product Details', () => {
     it('should display accurate product details', () => {
       cy.visit('https://www.demoblaze.com');
