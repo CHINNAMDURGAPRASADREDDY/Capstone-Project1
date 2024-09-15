@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Cypress E2E Tests
 
 on:
   push:
@@ -11,55 +11,23 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-
     steps:
-      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      # Setup Node.js (you can change the node-version if needed)
-      - name: Setup Node.js
+        
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '16'
 
-      # Install npm dependencies
       - name: Install dependencies
         run: npm install
 
-      # Run Cypress tests
-      - name: Run Cypress tests
-        run: npm run cypress:run
+      - name: Run Cypress Tests
+        run: npx cypress run --reporter mochawesome
 
-      # Merge Mochawesome reports (after tests are complete)
-      - name: Merge Mochawesome reports
-        run: npm run report:merge
-
-      # Generate final Mochawesome HTML report
-      - name: Generate Mochawesome HTML report
-        run: npm run report:generate
-
-      # Upload report to GitHub Actions as artifact
-      - name: Upload test report
+      - name: Upload Cypress Test Report
         uses: actions/upload-artifact@v3
         with:
-          name: mochawesome-report
-          path: cypress/reports/test-report.html
-
-      # Upload Cypress videos as artifacts (if you enable video recording)
-      - name: Upload Cypress videos
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress-videos
-          path: cypress/videos
-
-      # Upload Cypress screenshots as artifacts (if tests fail and screenshots are captured)
-      - name: Upload Cypress screenshots
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-
-
+          name: cypress-test-report
+          path: cypress/reports/mochawesome-report/*.html
